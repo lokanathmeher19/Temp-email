@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: temp-email-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: tempadmin
+      POSTGRES_PASSWORD: temppassword
+      POSTGRES_DB: temp_email_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: temp-email-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: temp-email-mailhog
+    ports:
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web UI
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
