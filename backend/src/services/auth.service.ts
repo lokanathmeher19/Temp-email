@@ -44,14 +44,14 @@ export class AuthService {
   static generateTokens(userId: string, role: string) {
     const accessToken = jwt.sign(
       { id: userId, role },
-      process.env.JWT_ACCESS_SECRET!,
-      { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' }
+      process.env.JWT_ACCESS_SECRET as string,
+      { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' } as jwt.SignOptions
     );
 
     const refreshToken = jwt.sign(
       { id: userId, role },
-      process.env.JWT_REFRESH_SECRET!,
-      { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
+      process.env.JWT_REFRESH_SECRET as string,
+      { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' } as jwt.SignOptions
     );
 
     return { accessToken, refreshToken };

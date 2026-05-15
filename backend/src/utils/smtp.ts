@@ -17,8 +17,6 @@ export const startSMTPServer = () => {
         }
 
         try {
-          const toAddress = parsed.to?.text || '';
-          
           // We might receive email for multiple recipients, let's extract the ones matching our domains
           const domains = (process.env.SUPPORTED_DOMAINS || 'tempmail.local').split(',');
           
