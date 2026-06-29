@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "Temp-Email and SMS SaaS Platform",
   "scripts": {
-    "start": "concurrently \"npm run docker\" \"npm run backend\" \"npm run frontend\"",
+    "start": "concurrently \"npm run docker\" \"npm run server\" \"npm run client\"",
     "docker": "docker-compose up -d",
     "docker:stop": "docker-compose down",
-    "backend": "npm run dev --prefix backend",
-    "frontend": "npm run dev --prefix frontend",
-    "install:all": "npm install --prefix backend && npm install --prefix frontend",
-    "build:all": "npm run build --prefix backend && npm run build --prefix frontend"
+    "server": "npm run start --prefix server",
+    "client": "npm run dev --prefix client",
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "build:all": "npm run build --prefix client"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
