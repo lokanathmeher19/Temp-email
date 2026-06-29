@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Temp-Email and SMS SaaS Platform",
   "scripts": {
-    "start": "concurrently \"npm run docker\" \"npm run server\" \"npm run client\"",
-    "docker": "docker-compose up -d",
-    "docker:stop": "docker-compose down",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "docker": "docker compose up -d",
+    "docker:stop": "docker compose down",
     "server": "npm run start --prefix server",
     "client": "npm run dev --prefix client",
     "install:all": "npm install --prefix server && npm install --prefix client",

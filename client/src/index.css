@@ -1,9 +1,48 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "sans-serif";
+  
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-slide-up: slide-up 0.4s ease-out;
+  --animate-pulse-slow: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .7; }
+  }
+}
 
 @layer base {
   body {
-    @apply bg-gray-900 text-gray-100;
+    @apply bg-slate-950 text-slate-200 font-sans antialiased selection:bg-indigo-500/30 selection:text-indigo-200;
   }
+  
+  /* Custom modern scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-700/50 rounded-full border-2 border-transparent bg-clip-padding hover:bg-slate-600/50 transition-colors;
+  }
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  @apply bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 shadow-2xl;
 }
