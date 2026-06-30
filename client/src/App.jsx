@@ -4,6 +4,7 @@ import { Mail, Shield, Sparkles } from 'lucide-react';
 import EmailBox from './components/EmailBox';
 import Inbox from './components/Inbox';
 import EmailViewer from './components/EmailViewer';
+import InfoSection from './components/InfoSection';
 
 const API_BASE = 'http://localhost:3001/api';
 
@@ -244,13 +245,15 @@ function App() {
                 TempMail <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">Pro</span>
               </h1>
             </div>
-            <div className="hidden sm:flex items-center gap-6 text-sm font-medium text-slate-400">
-              <span className="flex items-center gap-1.5 hover:text-white transition-colors cursor-default">
-                <Shield size={16} className="text-emerald-400" /> Secure
-              </span>
-              <span className="flex items-center gap-1.5 hover:text-white transition-colors cursor-default">
-                <Sparkles size={16} className="text-amber-400" /> Fast
-              </span>
+            <div className="hidden sm:flex items-center gap-4 text-sm font-medium">
+              <button className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-full transition-colors border border-slate-700/50">
+                <Shield size={14} className="text-indigo-400" />
+                <span>Temp Number</span>
+              </button>
+              <button className="flex items-center gap-2 px-4 py-2 bg-amber-400 hover:bg-amber-500 text-amber-950 rounded-full transition-colors font-bold shadow-lg shadow-amber-400/20">
+                <Sparkles size={14} />
+                <span>Premium</span>
+              </button>
             </div>
           </div>
         </header>
@@ -293,6 +296,8 @@ function App() {
               />
             )}
           </div>
+
+          <InfoSection />
         </main>
 
         <footer className="border-t border-white/5 py-8 mt-auto">

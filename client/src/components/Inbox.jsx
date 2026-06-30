@@ -68,55 +68,67 @@ const Inbox = ({ messages, loading, onSelectMessage, autoSync, setAutoSync, coun
             </p>
           </div>
         ) : (
-          <ul className="divide-y divide-slate-800/50">
-            {messages.map((msg, idx) => (
-              <li 
-                key={msg.id} 
-                className="group cursor-pointer p-4 hover:bg-slate-800/40 transition-all duration-300 flex flex-col sm:flex-row sm:items-center gap-4 relative animate-fade-in"
-                style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'both' }}
-                onClick={() => onSelectMessage(msg.id)}
-              >
-                {!msg.seen && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-indigo-500 rounded-r-md" />
-                )}
+          <div className="flex flex-col">
+            {/* Table Header */}
+            <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-4 bg-slate-900 border-b border-slate-700/50 text-xs font-bold text-slate-300 uppercase tracking-widest">
+              <div className="col-span-4 pl-2">Sender</div>
+              <div className="col-span-6">Subject</div>
+              <div className="col-span-2 text-right pr-2">View</div>
+            </div>
+            
+            <ul className="divide-y divide-slate-800/50">
+              {messages.map((msg, idx) => (
+                <li 
+                  key={msg.id} 
+                  className="group cursor-pointer px-4 sm:px-6 py-4 hover:bg-slate-800/40 transition-all duration-300 flex flex-col sm:grid sm:grid-cols-12 sm:items-center gap-2 sm:gap-4 relative animate-fade-in"
+                  style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'both' }}
+                  onClick={() => onSelectMessage(msg.id)}
+                >
+                  {!msg.seen && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-indigo-500 rounded-r-md" />
+                  )}
 
-                <div className="flex-shrink-0 ml-2">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner transition-transform group-hover:scale-105 ${
-                    msg.seen 
-                      ? 'bg-slate-800 border border-slate-700/50' 
-                      : 'bg-gradient-to-br from-indigo-500/20 to-blue-500/20 border border-indigo-500/30'
-                  }`}>
-                    <Mail size={22} className={msg.seen ? 'text-slate-500' : 'text-indigo-400'} />
+                  {/* Sender Column */}
+                  <div className="col-span-4 flex items-center gap-3 min-w-0">
+                    <div className={`shrink-0 w-10 h-10 rounded-xl flex items-center justify-center shadow-inner transition-transform group-hover:scale-105 ${
+                      msg.seen 
+                        ? 'bg-slate-800 border border-slate-700/50' 
+                        : 'bg-gradient-to-br from-indigo-500/20 to-blue-500/20 border border-indigo-500/30'
+                    }`}>
+                      <Mail size={18} className={msg.seen ? 'text-slate-500' : 'text-indigo-400'} />
+                    </div>
+                    <p className={`text-sm truncate ${msg.seen ? 'text-slate-400' : 'text-slate-200 font-semibold'}`} title={msg.from.address}>
+                      {msg.from.address}
+                    </p>
                   </div>
-                </div>
-                
-                <div className="flex-1 min-w-0 pr-4">
-                  <p className={`text-sm truncate mb-1 ${msg.seen ? 'text-slate-400' : 'text-slate-200 font-semibold'}`}>
-                    {msg.from.address}
-                  </p>
-                  <p className={`text-base truncate ${msg.seen ? 'text-slate-500' : 'text-slate-300 font-medium'}`}>
-                    {msg.subject || '(No Subject)'}
-                  </p>
-                </div>
-                
-                <div className="flex items-center gap-3 self-start sm:self-center">
-                  <div className="text-xs text-slate-500 whitespace-nowrap font-medium bg-slate-900/50 px-3 py-1.5 rounded-full border border-slate-800">
-                    {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
+                  
+                  {/* Subject Column */}
+                  <div className="col-span-6 min-w-0 py-1 sm:py-0">
+                    <p className={`text-sm truncate ${msg.seen ? 'text-slate-500' : 'text-slate-300 font-medium'}`} title={msg.subject || '(No Subject)'}>
+                      {msg.subject || '(No Subject)'}
+                    </p>
                   </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteMessage(msg.id);
-                    }}
-                    className="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                    title="Delete message"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+                  
+                  {/* View/Time/Action Column */}
+                  <div className="col-span-2 flex items-center sm:justify-end gap-2 mt-2 sm:mt-0">
+                    <div className="text-xs text-slate-500 whitespace-nowrap font-medium">
+                      {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteMessage(msg.id);
+                      }}
+                      className="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                      title="Delete message"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
     </div>
