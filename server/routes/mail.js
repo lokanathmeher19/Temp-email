@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const { incrementStat } = require('../db');
 const router = express.Router();
 
 const API_BASE_URL = 'https://api.mail.tm';
@@ -43,21 +44,27 @@ router.post('/create', async (req, res) => {
     
     const address = `${username}@${domain}`;
     const password = generateRandomString(16);
-
-    const accountResponse = await axios.post(`${API_BASE_URL}/accounts`, {
-      address: address,
-      password: password
+    // Create the account using generated domain and password
+    const createResponse = await axios.post(`${API_BASE_URL}/accounts`, {
+      address,
+      password
+    });
+    
+    const account = createResponse.data;
+    
+    // Get auth token
+    const authResponse = await axios.post(`${API_BASE_URL}/token`, {
+      address: account.address,
+      password
     });
 
-    const tokenResponse = await axios.post(`${API_BASE_URL}/token`, {
-      address: address,
-      password: password
-    });
+    // Increment stats in the background
+    incrementStat('total_emails_generated').catch(console.error);
 
     res.json({
-      id: accountResponse.data.id,
-      address: address,
-      token: tokenResponse.data.token
+      ...account,
+      token: authResponse.data.token,
+      password // Returning password so client can use it later if needed (e.g. for reconnects)
     });
 
   } catch (error) {

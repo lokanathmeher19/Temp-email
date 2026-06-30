@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mailRoutes = require('./routes/mail');
+const adminRoutes = require('./routes/admin');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
@@ -27,8 +28,9 @@ const createAccountLimiter = rateLimit({
 app.use('/api/', apiLimiter);
 app.use('/api/create', createAccountLimiter);
 
-// Routes
+// Use Routes
 app.use('/api', mailRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/', (req, res) => {
   res.send('Temp Mail Backend API is running');

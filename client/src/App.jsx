@@ -5,6 +5,8 @@ import EmailBox from './components/EmailBox';
 import Inbox from './components/Inbox';
 import EmailViewer from './components/EmailViewer';
 import InfoSection from './components/InfoSection';
+import { Routes, Route } from 'react-router-dom';
+import Admin from './admin/Admin';
 
 const API_BASE = 'http://localhost:3001/api';
 
@@ -227,7 +229,7 @@ function App() {
     return () => clearInterval(interval);
   }, [account, expiryTime, deleteAccount]);
 
-  return (
+  const HomeLayout = () => (
     <div className="min-h-screen bg-slate-950 text-slate-200 font-sans relative overflow-x-hidden selection:bg-indigo-500/30">
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-600/15 blur-[120px]" />
@@ -308,6 +310,13 @@ function App() {
         </footer>
       </div>
     </div>
+  );
+
+  return (
+    <Routes>
+      <Route path="/" element={<HomeLayout />} />
+      <Route path="/admin" element={<Admin />} />
+    </Routes>
   );
 }
 
