@@ -229,7 +229,7 @@ function App() {
     return () => clearInterval(interval);
   }, [account, expiryTime, deleteAccount]);
 
-  const HomeLayout = () => (
+  const homeLayout = (
     <div className="min-h-screen bg-slate-950 text-slate-200 font-sans relative overflow-x-hidden selection:bg-indigo-500/30">
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-600/15 blur-[120px]" />
@@ -314,7 +314,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<HomeLayout />} />
+      <Route path="/" element={homeLayout} />
       <Route path="/admin" element={<Admin />} />
     </Routes>
   );
