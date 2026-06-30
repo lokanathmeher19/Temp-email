@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mailRoutes = require('./routes/mail');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const app = express();
@@ -8,6 +9,23 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+// General rate limiter for all API requests
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: { error: 'Too many requests, please try again later.' }
+});
+
+// Stricter rate limiter for account creation
+const createAccountLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // Limit each IP to 10 account creations per hour
+  message: { error: 'Too many accounts created from this IP, please try again after an hour.' }
+});
+
+app.use('/api/', apiLimiter);
+app.use('/api/create', createAccountLimiter);
 
 // Routes
 app.use('/api', mailRoutes);

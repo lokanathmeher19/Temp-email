@@ -1,53 +1,118 @@
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { Mail, Loader2, Inbox as InboxIcon } from 'lucide-react';
+import { Mail, Inbox as InboxIcon, Sparkles, Pause, Play, RefreshCw, Trash2 } from 'lucide-react';
 
-const Inbox = ({ messages, loading, onSelectMessage }) => {
+const Inbox = ({ messages, loading, onSelectMessage, autoSync, setAutoSync, countdown, onSyncNow, onDeleteMessage }) => {
   return (
-    <div className="bg-gray-800 rounded-xl shadow-lg border border-gray-700 w-full max-w-4xl mx-auto mt-8 overflow-hidden flex flex-col h-[600px]">
-      <div className="bg-gray-850 p-4 border-b border-gray-700 flex items-center justify-between">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
-          <InboxIcon size={20} className="text-blue-400" />
+    <div className="glass-panel rounded-2xl w-full max-w-4xl mx-auto overflow-hidden flex flex-col h-[600px] animate-fade-in relative">
+      
+      {/* Header */}
+      <div className="bg-slate-900/50 backdrop-blur-md p-5 border-b border-slate-700/50 flex items-center justify-between sticky top-0 z-10">
+        <h3 className="text-lg font-semibold flex items-center gap-3 text-slate-100">
+          <div className="p-2 bg-indigo-500/20 rounded-lg">
+            <InboxIcon size={20} className="text-indigo-400" />
+          </div>
           Inbox
         </h3>
-        {loading && (
-          <div className="flex items-center gap-2 text-gray-400 text-sm">
-            <Loader2 size={16} className="animate-spin" />
-            Checking for emails...
+        
+        <div className="flex items-center gap-4">
+          {/* Sync Status */}
+          {loading ? (
+            <div className="flex items-center gap-2 text-indigo-400 text-sm font-medium animate-pulse">
+              <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" />
+              <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '0.1s' }} />
+              <div className="w-2 h-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '0.2s' }} />
+              <span className="ml-2 hidden sm:inline">Syncing...</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-slate-400 text-sm font-medium">
+              {autoSync ? `Syncing in ${countdown}s` : 'Auto-sync paused'}
+            </div>
+          )}
+
+          {/* Sync Controls */}
+          <div className="flex items-center bg-slate-800/80 rounded-lg p-1 border border-slate-700/50">
+            <button 
+              onClick={() => setAutoSync(!autoSync)}
+              className={`p-1.5 rounded-md transition-colors ${autoSync ? 'bg-indigo-500/20 text-indigo-400' : 'hover:bg-slate-700 text-slate-400 hover:text-slate-200'}`}
+              title={autoSync ? "Pause auto-sync" : "Enable auto-sync"}
+            >
+              {autoSync ? <Pause size={16} /> : <Play size={16} />}
+            </button>
+            <div className="w-px h-4 bg-slate-700 mx-1" />
+            <button 
+              onClick={onSyncNow}
+              disabled={loading}
+              className="p-1.5 rounded-md hover:bg-slate-700 text-slate-400 hover:text-slate-200 transition-colors disabled:opacity-50"
+              title="Sync now"
+            >
+              <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+            </button>
           </div>
-        )}
+        </div>
       </div>
 
-      <div className="overflow-y-auto flex-1">
+      {/* Content */}
+      <div className="overflow-y-auto flex-1 custom-scrollbar">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-gray-400 p-8 text-center">
-            <Mail size={48} className="mb-4 text-gray-600 opacity-50" />
-            <p className="text-lg font-medium">Your inbox is empty</p>
-            <p className="text-sm mt-2">Waiting for incoming emails. This page auto-refreshes every 10 seconds.</p>
+          <div className="flex flex-col items-center justify-center h-full text-center p-8 animate-fade-in">
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-2xl animate-pulse-slow" />
+              <div className="bg-slate-800/80 p-6 rounded-3xl border border-slate-700 shadow-xl relative z-10">
+                <Sparkles size={48} className="text-indigo-400" />
+              </div>
+            </div>
+            <p className="text-xl font-semibold text-slate-200">Your inbox is empty</p>
+            <p className="text-sm mt-3 text-slate-400 max-w-xs">
+              Waiting for incoming emails. 
+            </p>
           </div>
         ) : (
-          <ul className="divide-y divide-gray-700">
-            {messages.map((msg) => (
+          <ul className="divide-y divide-slate-800/50">
+            {messages.map((msg, idx) => (
               <li 
                 key={msg.id} 
-                className="hover:bg-gray-750 cursor-pointer transition-colors p-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4"
+                className="group cursor-pointer p-4 hover:bg-slate-800/40 transition-all duration-300 flex flex-col sm:flex-row sm:items-center gap-4 relative animate-fade-in"
+                style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'both' }}
                 onClick={() => onSelectMessage(msg.id)}
               >
-                <div className="flex-shrink-0">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${msg.seen ? 'bg-gray-700' : 'bg-blue-600'}`}>
-                    <Mail size={20} className="text-white" />
+                {!msg.seen && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-indigo-500 rounded-r-md" />
+                )}
+
+                <div className="flex-shrink-0 ml-2">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner transition-transform group-hover:scale-105 ${
+                    msg.seen 
+                      ? 'bg-slate-800 border border-slate-700/50' 
+                      : 'bg-gradient-to-br from-indigo-500/20 to-blue-500/20 border border-indigo-500/30'
+                  }`}>
+                    <Mail size={22} className={msg.seen ? 'text-slate-500' : 'text-indigo-400'} />
                   </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm truncate ${msg.seen ? 'text-gray-400' : 'text-gray-200 font-semibold'}`}>
+                
+                <div className="flex-1 min-w-0 pr-4">
+                  <p className={`text-sm truncate mb-1 ${msg.seen ? 'text-slate-400' : 'text-slate-200 font-semibold'}`}>
                     {msg.from.address}
                   </p>
-                  <p className={`text-base truncate ${msg.seen ? 'text-gray-300' : 'text-white font-medium'}`}>
+                  <p className={`text-base truncate ${msg.seen ? 'text-slate-500' : 'text-slate-300 font-medium'}`}>
                     {msg.subject || '(No Subject)'}
                   </p>
                 </div>
-                <div className="text-xs text-gray-400 whitespace-nowrap">
-                  {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
+                
+                <div className="flex items-center gap-3 self-start sm:self-center">
+                  <div className="text-xs text-slate-500 whitespace-nowrap font-medium bg-slate-900/50 px-3 py-1.5 rounded-full border border-slate-800">
+                    {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteMessage(msg.id);
+                    }}
+                    className="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                    title="Delete message"
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 </div>
               </li>
             ))}
